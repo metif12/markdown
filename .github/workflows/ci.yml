@@ -24,17 +24,17 @@ jobs:
           path: v
       - name: Build V
         id: build_v
-        if: ${{ !cancelled() && steps.checkout_latest_v.outcome == 'success' }}
+        if: ${{ success() && !cancelled() && steps.checkout_latest_v.outcome == 'success' }}
         run: cd v && make && ./v symlink && cd -
 
       - name: Checkout markdown (for tests)
         id: checkout_markdown_for_tests
-        if: ${{ !cancelled() && steps.build_v.outcome == 'success' }}
+        if: ${{ success() && !cancelled() && steps.build_v.outcome == 'success' }}
         uses: actions/checkout@v2
         with:
           path: markdown
 
       - name: Run tests
         id: run_tests
-        if: ${{ !cancelled() && steps.checkout_markdown_for_tests.outcome == 'success' }}
+        if: ${{ success() && !cancelled() && steps.checkout_markdown_for_tests.outcome == 'success' }}
         run: cd markdown && v test .
